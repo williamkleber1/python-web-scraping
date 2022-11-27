@@ -1,17 +1,25 @@
-
+import requests
 from bs4 import BeautifulSoup
-import requests, csv
+import pandas as pd
 
-response = requests.get('https://www.scrapethissite.com/pages/simple/')
-soup_obj = BeautifulSoup(response.text, 'html.parser')
+country_list = []
 
-with open('results/results.csv', 'w', newline='', encoding='utf-8-sig') as file_result:
-	writer = csv.writer(file_result, delimiter=';', quoting=csv.QUOTE_ALL)
-	writer.writerow(["country", "capital", "population"])
+r= requests.get('https://www.scrapethissite.com/pages/simple/')
 
-	for country in soup_obj.select('.country'):
-		country_name = country.find('h3', 'country-name').get_text(strip=True)
-		country_capital = country.find('span', 'country-capital').get_text(strip=True)
-		country_population = country.find('span', 'country-population').get_text(strip=True)
-		writer.writerow([country_name, country_capital, country_population])
-	file_result.close()
+soup = BeautifulSoup(r.text, 'html.parser')
+
+
+for country in soup.select('.country'):
+  country_name = country.find('h3', 'country-name').get_text(strip=True)
+  country_capital = country.find('span', 'country-capital').get_text(strip=True)
+  country_population = country.find('span', 'country-population').get_text(strip=True)
+  country_area = country.find('span', 'country-area').get_text(strip=True)
+
+  country_list.append([country_name, country_capital, country_population, country_area])
+
+  #breakpoint()
+
+countries = pd.DataFrame(country_list, columns=["country", "capital", "population", "area"])
+
+countries.to_csv('results/results.csv', index=False, encoding = 'utf-8-sig', sep = ';')
+
