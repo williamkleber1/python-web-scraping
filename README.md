@@ -11,7 +11,7 @@
 
 ## 🚀 Executando o código
 
-Para executar o Ticketeria, siga estas etapas:
+Para executar o projeto, siga estas etapas:
 
 Baixe o repositório :
 ```
